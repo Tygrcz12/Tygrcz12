@@ -48,20 +48,47 @@ def get_format():
     while True:
         choice = input("\nEnter your choice (1 or 2): ").strip()
         if choice == '1':
-            return 'mp3'
+            return 'mp3', None
         elif choice == '2':
-            return 'mp4'
+            quality = get_video_quality()
+            return 'mp4', quality
         else:
             print("Error: Invalid choice. Please enter 1 or 2.")
 
 
-def download_video(url, format_type):
+def get_video_quality():
+    """Get desired video quality from user."""
+    print("\nSelect video quality:")
+    print("1. Best available (highest quality)")
+    print("2. 1080p (Full HD)")
+    print("3. 720p (HD)")
+    print("4. 480p (SD)")
+    print("5. 360p (Low)")
+    
+    while True:
+        choice = input("\nEnter your choice (1-5): ").strip()
+        if choice == '1':
+            return 'best'
+        elif choice == '2':
+            return '1080'
+        elif choice == '3':
+            return '720'
+        elif choice == '4':
+            return '480'
+        elif choice == '5':
+            return '360'
+        else:
+            print("Error: Invalid choice. Please enter a number between 1 and 5.")
+
+
+def download_video(url, format_type, quality=None):
     """
     Download video from YouTube.
     
     Args:
         url: YouTube video URL
         format_type: 'mp3' or 'mp4'
+        quality: Video quality ('best', '1080', '720', '480', '360') for MP4
     """
     try:
         # Create downloads folder if it doesn't exist
@@ -69,6 +96,9 @@ def download_video(url, format_type):
         os.makedirs(download_path, exist_ok=True)
         
         print(f"\nDownloading as {format_type.upper()}...")
+        if format_type == 'mp4' and quality:
+            quality_text = 'Best available' if quality == 'best' else f'{quality}p'
+            print(f"Quality: {quality_text}")
         print("Please wait...\n")
         
         if format_type == 'mp3':
@@ -85,9 +115,21 @@ def download_video(url, format_type):
                 'no_warnings': False,
             }
         else:
-            # Download as video (MP4)
+            # Download as video (MP4) with specified quality
+            if quality == 'best':
+                # Download best quality available
+                format_string = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+            else:
+                # Download specific resolution, fallback to best if not available
+                format_string = (
+                    f'bestvideo[height<={quality}][ext=mp4]+bestaudio[ext=m4a]/'
+                    f'best[height<={quality}][ext=mp4]/'
+                    'bestvideo[ext=mp4]+bestaudio[ext=m4a]/'
+                    'best[ext=mp4]/best'
+                )
+            
             ydl_opts = {
-                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+                'format': format_string,
                 'outtmpl': os.path.join(download_path, '%(title)s.%(ext)s'),
                 'quiet': False,
                 'no_warnings': False,
@@ -127,11 +169,11 @@ def main():
             print("\nThank you for using YouTube Downloader!")
             break
         
-        # Get format from user
-        format_type = get_format()
+        # Get format and quality from user
+        format_type, quality = get_format()
         
         # Download the video
-        success = download_video(url, format_type)
+        success = download_video(url, format_type, quality)
         
         # Ask if user wants to download another video
         print()

@@ -4,7 +4,8 @@ A simple command-line tool to download videos from YouTube in MP3 (audio) or MP4
 
 ## Features
 
-- Download YouTube videos in MP4 format
+- Download YouTube videos in MP4 format with quality selection
+- **High resolution support**: Choose from Best/1080p/720p/480p/360p
 - Extract audio and save as MP3 format
 - User-friendly command-line interface
 - Downloads saved to a dedicated 'downloads' folder
@@ -40,6 +41,12 @@ python youtube_downloader.py
    - Select the format:
      - `1` for MP3 (audio only)
      - `2` for MP4 (video)
+   - If you selected MP4, choose video quality:
+     - `1` for Best available (highest quality)
+     - `2` for 1080p (Full HD)
+     - `3` for 720p (HD)
+     - `4` for 480p (SD)
+     - `5` for 360p (Low)
    - Wait for the download to complete
 
 3. Find your downloaded files in the `downloads` folder
@@ -64,9 +71,19 @@ Select download format:
 1. MP3 (Audio only)
 2. MP4 (Video)
 
-Enter your choice (1 or 2): 1
+Enter your choice (1 or 2): 2
 
-Downloading as MP3...
+Select video quality:
+1. Best available (highest quality)
+2. 1080p (Full HD)
+3. 720p (HD)
+4. 480p (SD)
+5. 360p (Low)
+
+Enter your choice (1-5): 3
+
+Downloading as MP4...
+Quality: 720p
 Please wait...
 
 ✓ Successfully downloaded: Video Title
@@ -83,6 +100,8 @@ Thank you for using YouTube Downloader!
 - MP3 conversion requires FFmpeg to be installed on your system
 - Without FFmpeg, audio will be downloaded in the original format (usually m4a or webm)
 - The tool supports any video from YouTube that yt-dlp can access
+- **Quality selection**: When selecting a specific resolution (e.g., 720p), the tool will download that quality or the next best available if the exact resolution is not available
+- **Best quality option**: Selecting "Best available" will download the highest quality version of the video
 
 ## Troubleshooting
 
